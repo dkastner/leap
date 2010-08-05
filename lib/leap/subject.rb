@@ -11,7 +11,9 @@ module Leap
       define_method goal do |*considerations|
         options = considerations.extract_options!
         @deliberations ||= {}
-        @deliberations[goal] = self.class.decisions[goal].make(send(self.class.decisions[goal].signature_method), *considerations.push(options))
+        characteristics = send self.class.decisions[goal].signature_method
+        characteristics[:self] = self
+        @deliberations[goal] = self.class.decisions[goal].make(characteristics, *considerations.push(options))
         @deliberations[goal][goal]
       end
     end
